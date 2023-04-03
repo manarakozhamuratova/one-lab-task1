@@ -21,7 +21,7 @@ func (s *Server) NewServer(cfg config.Config, handler http.Handler) error {
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 	}
-	logrus.Info("Server is started at port http://localhost:%s", s.httpServer.Addr)
+	logrus.Info("Server is started at port http://localhost:9090")
 	return s.httpServer.ListenAndServe()
 }
 

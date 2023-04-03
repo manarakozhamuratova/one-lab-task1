@@ -17,5 +17,5 @@ func NewUserService(st UserStorage) *UserService {
 }
 
 func (s *UserService) Add(id string, u model.UserEntity) error {
-	return s.Add(id, u)
+	return s.st.Add(id, u)
 }
