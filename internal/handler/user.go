@@ -17,7 +17,8 @@ func (h *Handler) addUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := uuid.New().String()
+	users.ID = id
 	h.services.Add(id, users.UserEntity)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode("Success.")
+	json.NewEncoder(w).Encode(users.ID)
 }
