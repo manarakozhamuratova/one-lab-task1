@@ -10,6 +10,9 @@ import (
 	"one-lab/transport/httpserver"
 	"os"
 	"os/signal"
+	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -20,26 +23,31 @@ func main() {
 }
 
 func run() error {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	shutdown(cancel)
 	config, err := config.LoadConfig(".")
 	if err != nil {
-		log.Fatal("cannot load config:", err)
+		logrus.Fatalf("cannot load config:%v", err)
 	}
-	storage := memory.NewStorage(ctx)
+	storage := memory.NewStorage()
 	service := service.NewUserService(storage)
 	handler := handler.NewHandler(service)
-	srv := httpserver.NewServer(config, *handler)
-	log.Println("http://localhost:9090/")
-	return srv.ListenAndServe()
-}
+	srv := new(httpserver.Server)
+	go func() {
+		if err := srv.NewServer(config, handler.InitRoutes()); err != nil {
+			logrus.Fatalf("Error while running server %s", err)
+			return
+		}
+	}()
 
-func shutdown(ctx context.CancelFunc) {
+	logrus.Info("App starting...")
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
-	go func() {
-		log.Print(<-c)
-		ctx()
-	}()
+	<-c
+	logrus.Info("App shutting down...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err = srv.Shutdown(ctx); err != nil {
+		logrus.Error("error while server shutting down %s", err)
+		return err
+	}
+	return nil
 }

@@ -1,7 +1,6 @@
 package memory
 
 import (
-	"context"
 	"one-lab/internal/model"
 	"sync"
 )
@@ -18,7 +17,7 @@ func (s *Storage) Add(id string, u model.UserEntity) error {
 	return nil
 }
 
-func NewStorage(ctx context.Context) *Storage {
+func NewStorage() *Storage {
 	return &Storage{
 		users: make(map[string]model.User, 0),
 		mu:    sync.RWMutex{},

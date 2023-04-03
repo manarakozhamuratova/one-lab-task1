@@ -15,6 +15,8 @@ func NewHandler(services *service.UserService) *Handler {
 	}
 }
 
-func (h *Handler) InitRoutes(mux *http.ServeMux) {
+func (h *Handler) InitRoutes() *http.ServeMux {
+	mux := http.NewServeMux()
 	mux.HandleFunc("/add", h.addUser)
+	return mux
 }

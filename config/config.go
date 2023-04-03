@@ -1,12 +1,16 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	ServerAddress string `mapstructure:"SERVER_ADDRESS"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
+	logrus.Info("Configs are initializing...")
 	viper.AddConfigPath(path)
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
@@ -19,5 +23,6 @@ func LoadConfig(path string) (config Config, err error) {
 	}
 
 	err = viper.Unmarshal(&config)
+	logrus.Info("Configs are initialized")
 	return
 }
