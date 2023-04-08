@@ -8,6 +8,7 @@ type UserService struct {
 	st UserStorage
 }
 
+// что бы удобнее определять потом где твой интерфейс лучше называть их ISomeInterface 
 type UserStorage interface {
 	Add(id string, u model.UserEntity) error
 }

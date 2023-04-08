@@ -27,9 +27,10 @@ func run() error {
 	if err != nil {
 		logrus.Fatalf("cannot load config:%v", err)
 	}
+	// в storage нужно создавать файл где будет конструктор и интерфейсы для всех репозиториев
 	storage := memory.NewStorage()
-	service := service.NewUserService(storage)
-	handler := handler.NewHandler(service)
+	service := service.NewUserService(storage) // коллизия имен
+	handler := handler.NewHandler(service) // // коллизия имен 
 	srv := new(httpserver.Server)
 	go func() {
 		if err := srv.NewServer(config, handler.InitRoutes()); err != nil {
