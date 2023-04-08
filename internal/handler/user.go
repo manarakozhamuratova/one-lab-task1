@@ -16,6 +16,7 @@ func (h *Handler) addUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	// это уже часть бизнес-логики а значит она должна быть в /serivce
 	id := uuid.New().String()
 	users.ID = id
 	h.services.Add(id, users.UserEntity)
